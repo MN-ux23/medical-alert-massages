@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مولد رسائل إصابات متعددة</title>
+<style>
+    body {
+      font-family: sans-serif;
+      background:#f5f5f5;
+      padding:20px;
+    }
+
+    .logo-box {
+      text-align:center;
+      margin-bottom:20px;
+    }
+    .logo {
+      width:160px;
+      height:auto;
+    }
+
+    .box {
+      background:#fff;
+      padding:15px;
+      margin-bottom:15px;
+      border-radius:10px;
+    }
+
+    h2 {
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    label {
+      font-weight:bold;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    select, button {
+      width:100%;
+      padding:10px;
+      margin-top:8px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:18px;
+    }
+
+    button {
+      background:#4a6cf7;
+      color:#fff;
+      border:none;
+      cursor:pointer;
+    }
+    button:hover {
+      background:#3653d5;
+    }
+
+    .result {
+      background:#eef2ff;
+      padding:15px;
+      border:2px solid #4a6cf7;
+      border-radius:10px;
+      white-space:pre-wrap;
+    }
+
+    .check-list div {
+      margin:4px 0;
+    }
+    .check-list label {
+      font-weight:normal;
+    }
+    /* تنسيق حقول الإدخال النصّية فقط */
+input[type="text"] {
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:18px;
+  box-sizing:border-box;
+}
+  </style>
+</head>
+
+<body>
+
+<div class="logo-box">
+    <img src="log.png" class="logo">
+</div>
+
+<h2>رسائل التنبية في قروب لجنة الطوارئ</h2>
+
+<!-- نوع الحدث -->
+<div class="box">
+  <label>نوع الحدث</label>
+  <select id="eventType">
+    <option value="" disabled selected>اختر نوع الحدث</option>
+    <option value="حادث مروري">حادث مروري</option>
+    <option value="سقوط">سقوط</option>
+    <option value="انهيار">انهيار</option>
+    <option value="other">أخرى (اكتب يدوياً)</option>
+  </select>
+  <input id="eventTypeOther" style="display:none" type="text" placeholder="اكتب نوع الحدث">
+</div>
+<!-- الموقع -->
+<div class="box">
+  <label class="inline-label">الموقع</label>
+  <input id="location" type="text" placeholder="مثال: طريق حائل - المدينة المنورة السريع">
+</div>
+<!-- مصدر البلاغ -->
+<div class="box">
+  <label>مصدر البلاغ</label>
+  <select id="source">
+    <option value="" disabled selected>اختر مصدر البلاغ</option>
+    <option value="الهلال الأحمر">الهلال الأحمر</option>
+    <option value="الدفاع المدني">الدفاع المدني</option>
+    <option value="مدير المستشفى">مدير المستشفى</option>
+    <option value="other">أخرى (اكتب يدوياً)</option>
+  </select>
+  <input id="sourceOther" style="display:none" type="text" placeholder="اكتب مصدر البلاغ">
+</div>
+
+<!-- وقت الحدث -->
+<div class="box">
+  <label>وقت الحدث</label>
+  <div style="display:flex; gap:10px;">
+    <select id="hourEvent">
+      <option value="">ساعة</option>
+      <script>for(let i=1;i<=12;i++)document.write(`<option>${String(i).padStart(2,"0")}</option>`)</script>
+    </select>
+
+    <select id="minuteEvent">
+      <option value="">دقيقة</option>
+      <script>for(let i=0;i<=59;i++)document.write(`<option>${String(i).padStart(2,"0")}</option>`)</script>
+    </select>
+
+    <select id="ampmEvent">
+      <option value="">AM / PM</option>
+      <option>AM</option>
+      <option>PM</option>
+    </select>
+  </div>
+</div>
+
+<!-- الحالات -->
+<div class="box">
+  <label>إجمالي عدد الحالات</label>
+  <select id="totalCases">
+    <option value="">اختر العدد</option>
+    <script>for(let i=1;i<=100;i++)document.write(`<option>${i}</option>`)</script>
+  </select>
+</div>
+
+<div class="box">
+  <label>تفصيل الحالات</label>
+
+     <label> 🟥 حمراء:   </label>
+  <select id="redCases"><script>for(let i=0;i<=100;i++)document.write(`<option>${i}</option>`)</script></select><br><br>
+
+  🟨 صفراء: 
+  <select id="yellowCases"><script>for(let i=0;i<=100;i++)document.write(`<option>${i}</option>`)</script></select><br><br>
+
+  🟩 خضراء: 
+  <select id="greenCases"><script>for(let i=0;i<=100;i++)document.write(`<option>${i}</option>`)</script></select><br><br>
+
+  ⬛ سوداء: 
+  <select id="blackCases"><script>for(let i=0;i<=100;i++)document.write(`<option>${i}</option>`)</script></select>
+</div>
+
+<!-- توجيه الحالات -->
+<div class="box">
+  <label>توجيه الحالات إلى:</label>
+  <div class="check-list" id="destList"></div>
+</div>
+
+<!-- دعم الهلال الأحمر -->
+<div class="box">
+  <label>دعم الهلال الأحمر:</label>
+  <select id="redSupport">
+    <option value="" disabled selected>اختر العدد</option>
+    <script>
+      for(let i=0; i<=10; i++){
+        document.write(`<option value="${i}">${i}</option>`);
+      }
+    </script>
+  </select>
+</div>
+
+<!-- رفع الجاهزية -->
+<div class="box">
+  <label>رفع الجاهزية في:</label>
+  <div class="check-list" id="readyList"></div>
+</div>
+
+<!-- صحة 8 -->
+<div class="box">
+  <label>إبلاغ صحة 8</label>
+  <div style="display:flex; gap:10px;">
+    <select id="hourMoh"><option value="">ساعة</option>
+      <script>for(let i=1;i<=12;i++)document.write(`<option>${String(i).padStart(2,"0")}</option>`)</script>
+    </select>
+<select id="minuteMoh"><option value="">دقيقة</option>
+      <script>for(let i=0;i<=59;i++)document.write(`<option>${String(i).padStart(2,"0")}</option>`)</script>
+    </select>
+
+    <select id="ampmMoh"><option value="">AM / PM</option><option>AM</option><option>PM</option></select>
+  </div>
+</div>
+
+<button onclick="generate()">إنشاء الرسالة</button>
+
+<h3>الرسالة:</h3>
+<div class="result" id="output"></div>
+
+<button onclick="copyText()">نسخ الرسالة</button>
+
+<script>
+
+// قائمة المستشفيات
+const hospitals = [
+"مستشفى الملك سلمان التخصصي","مستشفى الملك خالد","مستشفى حائل العام",
+"مستشفى الولادة والأطفال","مستشفى أجا للرعاية المديدة",
+"مجمع إرادة والصحة النفسية","مستشفى شراف","مستشفى الغزالة العام",
+"مستشفى الشنان العام","مستشفى سميراء العام","مستشفى السليمي العام",
+"مستشفى موقق العام","مستشفى الحائط العام","مستشفى الشملي العام",
+"مستشفى بقعاء العام"
+];
+
+// توليد Checkboxes
+function loadCheckboxes(){
+  hospitals.forEach(h=>{
+    document.getElementById("destList").innerHTML +=
+      `<div><label><input type="checkbox" class="dest" value="${h}"> ${h}</label></div>`;
+    document.getElementById("readyList").innerHTML +=
+      `<div><label><input type="checkbox" class="ready" value="${h}"> ${h}</label></div>`;
+  });
+}
+loadCheckboxes();
+// إظهار خانة كتابة عند اختيار "أخرى" في نوع الحدث
+document.getElementById("eventType").addEventListener("change", function () {
+  if (this.value === "other") {
+    document.getElementById("eventTypeOther").style.display = "block";
+  } else {
+    document.getElementById("eventTypeOther").style.display = "none";
+    document.getElementById("eventTypeOther").value = "";
+  }
+});
+
+// إظهار خانة كتابة عند اختيار "أخرى" في مصدر البلاغ
+document.getElementById("source").addEventListener("change", function () {
+  if (this.value === "other") {
+    document.getElementById("sourceOther").style.display = "block";
+  } else {
+    document.getElementById("sourceOther").style.display = "none";
+    document.getElementById("sourceOther").value = "";
+  }
+});
+
+function getChecked(cls){
+  return [...document.querySelectorAll(`.${cls}:checked`)].map(x=>x.value);
+}
+
+function formatList(arr){
+  return arr.map((x,i)=>`${i+1}- ${x}`).join("\n");
+}
+
+function generate(){
+
+  const eventType = 
+    document.getElementById("eventType").value === "other"
+    ? document.getElementById("eventTypeOther").value
+    : document.getElementById("eventType").value;
+
+  const source =
+    document.getElementById("source").value === "other"
+    ? document.getElementById("sourceOther").value
+    : document.getElementById("source").value;
+
+  const dest = getChecked("dest");
+  const ready = getChecked("ready");
+  const redSupport = document.getElementById("redSupport").value;
+
+  if(dest.length===0 || ready.length===0){
+    alert("يجب اختيار مستشفى واحد على الأقل في كل قسم.");
+    return;
+  }
+
+  const msg = `
+⚠️ <strong>(تنبيه)</strong>
+
+<strong>الحدث:</strong> إصابات متعددة
+<strong>نوع الحدث:</strong> ${eventType}
+<strong>الوقت:</strong> ${document.getElementById("hourEvent").value}:${document.getElementById("minuteEvent").value} ${document.getElementById("ampmEvent").value}
+<strong>الموقع:</strong> ${document.getElementById("location").value}
+<strong>مصدر البلاغ:</strong> ${source}
+
+<strong>إجمالي عدد الحالات (${document.getElementById("totalCases").value}):</strong>
+ ${document.getElementById("redCases").value} 🟥
+ ${document.getElementById("yellowCases").value} 🟨
+ ${document.getElementById("greenCases").value} 🟩
+ ${document.getElementById("blackCases").value} ⬛
+
+<strong>الإجراءات المتخذة هي:-</strong>
+تفعيل خطة الطوارئ
+<strong>توجيه الحالات:</strong>
+${formatList(dest).replace(/\n/g,"<br>")}
+
+<strong>دعم الهلال الأحمر:</strong>
+${redSupport}
+
+<strong>رفع الجاهزية:</strong>
+${formatList(ready).replace(/\n/g,"<br>")}
+
+<strong>إبلاغ صحة 8:</strong>
+${document.getElementById("hourMoh").value}:${document.getElementById("minuteMoh").value} ${document.getElementById("ampmMoh").value}
+
+➕ <strong>جاري متابعة الحدث</strong>
+`;
+
+  document.getElementById("output").innerHTML = msg;
+}
+
+function copyText(){
+  let txt = document.getElementById("output").innerText;
+
+  const bold = [
+    "(تنبيه)","الحدث:","نوع الحدث:",
+    "الوقت:","الموقع:","مصدر البلاغ:",
+    "دعم الهلال الأحمر","إجمالي","توجيه الحالات","رفع الجاهزية","إبلاغ صحة 8"
+  ];
+
+  bold.forEach(b=> txt = txt.replace(b,`*${b}*`));
+
+  navigator.clipboard.writeText(txt);
+  alert("تم النسخ!");
+}
+
+</script>
+
+</body>
+</html>

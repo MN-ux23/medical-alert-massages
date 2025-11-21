@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الصفحة الرئيسية - مولد الرسائل</title>
+
+<style>
+    body {
+        font-family: sans-serif;
+        background:#f5f5f5;
+        padding:20px;
+        text-align:center;
+    }
+
+.logo-box {
+    width: 100%;
+    display: flex;
+    justify-content: center;  /* يجيبها بالنص */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 400px;    /* تقدرين تغيرينه */
+    height: auto;
+    display: block;
+}
+
+    h2 {
+        margin-bottom:30px;
+    }
+
+    .btn {
+        display:block;
+        width:100%;
+        background:#7688d2;
+        color:#fff;
+        padding:18px;
+        margin:15px 0;
+        border:none;
+        border-radius:12px;
+        font-size:22px;
+        cursor:pointer;
+        transition:0.2s;
+    }
+
+    .btn:hover {
+        background:#071b74;
+    }
+</style>
+
+</head>
+<body>
+
+<!-- الشعار -->
+<div class="logo-box">
+    <img src="log.png" class="logo" alt="logo">
+</div>
+
+<h2>رسائل التنبية في قروب لجنة الطوارئ  </h2>
+
+<!-- الأزرار -->
+<button class="btn" onclick="goTo('electric.html')">انقطاع كهرباء</button>
+<button class="btn" onclick="goTo('injuries.html')">إصابات متعددة</button>
+<button class="btn" onclick="goTo('stop_cases.html')">إيقاف استقبال الحالات</button>
+<button class="btn" onclick="goTo('oxygen.html')">انقطاع الأكسجين</button>
+
+<script>
+function goTo(page){
+    window.location.href = page;
+}
+</script>
+
+</body>
+</html>
