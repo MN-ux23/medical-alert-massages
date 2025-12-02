@@ -224,6 +224,8 @@ function formatNumberedList(items) {
 }
 
 function generate() {
+
+  const locationValue = document.getElementById("q2").value; // ← إصلاح الموقع
   const reporter = document.getElementById("reporter").value;
   const reason   = document.getElementById("reason").value;
   const duration = document.getElementById("duration").value;
@@ -231,21 +233,22 @@ function generate() {
   const destAllSelected = getCheckedValues("destAll");
   const destInjSelected = getCheckedValues("destInj");
 
-  if (!reporter||!reason||!duration ||
-      destAllSelected.length === 0 ||
-      destInjSelected.length === 0) {
+  // التحقق من جميع الحقول
+  if (!locationValue || !reporter || !reason || !duration ||
+      destAllSelected.length === 0 || destInjSelected.length === 0) {
     alert("يرجى تعبئة جميع الحقول واختيار مستشفى واحد على الأقل في كل قائمة.");
     return;
   }
 
   const destAllList = formatNumberedList(destAllSelected);
   const destInjList = formatNumberedList(destInjSelected);
-const template = `
+
+  const template = `
 ⚠️ <strong>(تنبيه)</strong>
 
 <strong>إيقاف استقبال الإحالات بقسم الطوارئ</strong>
 
-<strong>الموقع:</strong> ${q2}
+<strong>الموقع:</strong> ${locationValue}
 <strong>جهة البلاغ:</strong>
 ${reporter}
 
@@ -266,28 +269,24 @@ ${destInjList.replace(/\n/g, "<br>")}
 
 <strong>المدة:</strong>
 ${duration} ساعات
-
 `;
 
-  // show bold on the website
   document.getElementById("output").innerHTML = template;
 }
 
 function copyText() {
-  // plain text (no HTML tags)
   let text = document.getElementById("output").innerText;
 
-  // labels to be bold in WhatsApp
   const boldLabels = [
     "(تنبيه)",
     "إيقاف استقبال الإحالات بقسم الطوارئ",
+    "الموقع:",
     "جهة البلاغ:",
     "السبب:",
     "سوف يتم التنسيق مع كلاً من:",
     "وذلك بتوجيه جميع الحالات إلى:",
     "حالات الحوادث والإصابات إلى:",
     "المدة:",
-
   ];
 
   boldLabels.forEach(label => {
@@ -299,9 +298,11 @@ function copyText() {
 }
 </script>
 
+
 </body>
 
 </html>
+
 
 
 
